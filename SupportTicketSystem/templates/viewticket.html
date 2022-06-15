@@ -1,0 +1,141 @@
+{% extends "index.html" %}
+
+{% block title %} Ticket {% endblock %}
+
+{% block content %}
+
+<h1 align = "center"><br></h1>
+
+{% if ticket is defined %}
+
+<!-- THE TICKET -->
+  <div class="card flex-md-row mb-4 box-shadow h-md-250">
+    <table class = "table table-borderless">
+      <tr>
+        <td colspan = "40%"><h2>{{ ticket.title }}</h2></td>
+        <td colspan="40%" style = "text-align: right">
+          {{ priority_map[ticket.priority] }}
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan = "50%"> {{username_func(ticket.user_id)}}</td>
+        <td colspan="50%" style = "text-align:right"><i class="mb-1 text-muted">{{ticket.time_posted.strftime("%a %b %d %Y, at %I:%M %p")}}</i></td>
+        
+      </tr>
+      
+      <tr>
+        <td colspan = "100%"><hr></td>
+      </tr>
+      
+      <tr>
+        <td colspan="100%">
+          {{ ticket.content }}
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan = "100%"><hr></td>
+      </tr>
+
+      <!-- IF RESOLVED (PERMS REQUIRED) -->
+      {% if ticket.resolved %}
+      <tr>
+        <td colspan = "100%" align = "center">
+          <div class="alert alert-success">
+            Resolved: {{ticket.time_posted.strftime("%a %b %d %Y, at %I:%M %p")}}
+          </div>
+        </td>
+      </tr>
+      <!-- <tr>
+        <td align = "center" colspan = "100%">
+          <button class="btn btn-danger" onclick="resolveTicket({{ ticket.id }}, {{ user.id }})">Mark Unresolved</button>
+        </td>
+      </tr> -->
+      <!-- END RESOLVED -->
+      {% else %}
+      <!-- IF UNRESOLVED (PERMS REQUIRED) -->
+      <tr>
+        <td align = "center" colspan = "100%">
+          <button class="btn btn-success" onclick="resolveTicket({{ ticket.id }}, {{ user.id }})">Mark Resolved</button>
+        </td>
+      </tr>
+      <!-- END UNRESOLVED -->
+      {% endif %}
+
+
+
+
+
+      <!-- DELETE BUTTON (PERMS REQUIRED) -->
+      {% if admin_perms %}
+      <tr>
+        <td colspan = "100%" align = "right">
+          <button name = "delete-ticket" id = "delete-ticket" class = "btn btn-danger" onClick = "deleteTicket({{ticket.id}})"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr>
+      <!-- END DELETE BUTTON -->
+      {% endif %}
+
+
+    </table>
+  </div>
+  <!-- END TICKET -->
+
+  {% for comment in ticket.comments %}
+  <!-- COMMENTS REPEATED FOR ALL COMMENTS -->
+  <div class="card flex-md-row mb-4 box-shadow h-md-250">
+    <table class = "table table-borderless">
+      <tr>
+        <td>
+          {{username_func(comment.user_id)}}
+        </td>
+        <td align = "right">
+          <i class="mb-1 text-muted">{{comment.time_posted.strftime("%a %b %d %Y, at %I:%M %p")}}</i>
+        </td>
+      </tr>
+      <tr>
+        <td colspan = "100%"><hr></td>
+      </tr>
+      <tr>
+        <td colspan = "100%">
+          {{ comment.content }}
+        </td>
+      </tr>
+      {% if admin_perms %}
+      <!-- DELETE BUTTON (PERMS REQUIRED) -->
+      <tr>
+        <td colspan = "100%" align = "right">
+          <button name = "delete-comment" id = "delete-comment" class = "btn btn-danger" onClick = "deleteComment({{ comment.id }})"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr>
+      {% endif %}
+      <!-- END DELETE BUTTON -->
+    </table>
+  </div>
+  <!-- END COMMENTS -->
+  {% endfor %}
+
+
+  <!-- NEW COMMENT -->
+  <div class="card flex-md-row mb-4 box-shadow h-md-250">
+    <table class = "table table-borderless">
+      <tr>
+        <td align = "center">New Comment:</td>
+      </tr>
+      <tr>
+        <td>
+          <textarea id = "new-comment" style = "width : 100%" oninput="resizeTextArea(this.id)"></textarea>
+        </td>
+      </tr>
+      <tr>
+        <td align = "center">
+          <button id = "submit-comment" type = "submit" class = "btn btn-primary" onclick="postComment({{user.id}}, {{ticket.id}})">Submit New Comment</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <!-- END NEW COMMENT -->
+{% endif %}
+
+{% endblock %}

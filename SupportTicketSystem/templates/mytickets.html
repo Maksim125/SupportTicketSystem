@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+
+{% block title %} My Tickets {% endblock %}
+
+{% block content %}
+<br>
+<h1 align = "center">Here are all the tickets you posted, {{ user.username }}</h1>
+<br>
+<ul class = "list-group list-group-flush" id = "tickets">
+    {% for ticket,name,priority, group_name in ticket_user_priority_group %}
+    <div class="card flex-md-row mb-4 box-shadow h-md-250">
+        <div class="card-body d-flex flex-column align-items-start">
+          <div>
+            <p id = "{{priority}}" ><strong> {{ priority }}</strong></p>
+            <h2 class="mb-0">
+              <p class="text-dark" href="#">{{ ticket.title }}</p>
+            </h2>
+            <div class="mb-1 text-muted"><i>Issued:</i> {{ticket.time_posted.strftime("%a %b %d %Y, at %I:%M %p")}} by {{ name }} </div>
+            <div class="mb-1 text-muted"><i>To:</i> {{group_name}}</div>
+            {% if ticket.time_resolved %}
+            <div class="mb-1 text-muted"><i>Resolved:</i> {{ticket.time_resolved.strftime("%a %b %d %Y, at %I:%M %p")}} </div>
+            {% endif %}
+          </div>
+        </div>
+        <div name = "edit-buttons" id = "edit-buttons">
+          <button name = "edit-ticket" id = "edit-ticket" class = "btn btn-primary" onclick="viewTicket( {{ticket.id}})"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg></button>
+        </div>
+    </div>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

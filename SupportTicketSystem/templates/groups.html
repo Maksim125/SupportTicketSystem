@@ -1,0 +1,158 @@
+{% extends "index.html" %}
+
+{% block title %} Groups {% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+
+    
+    <h1 align = "center">Manage Your Groups</h1> <br>
+
+        {% for group in groups %}
+
+            {% set viewer_rank = read_rank(user.id, group.id).rank_in_group %}
+
+            <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+
+                <div class="card" id = "accordionCard">
+
+                    <div class="card-header" role="tab">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx" href="#collapse{{group.id}}"
+                        aria-expanded="false" aria-controls="collapseThree3" >
+                        <button class = "group-button text-dark">
+                            {{group.group_name}} ({{ read_all_users_in_group(group.id)|length }})
+                            <i class="fa fa-angle-down rotate-icon"></i>
+                            </h4>
+                        </button>
+                    </a>
+                    </div>
+                    <div id="collapse{{group.id}}" class="collapse" role="tabpanel" aria-labelledby="headingThree3"
+                        data-parent="#accordionEx">
+                    <div class="card-body">
+                        <table class = "table  table-striped table-bordered table-hover">
+                            <tr>
+                            <th scope = "col">Username</th>
+                            <th scope = "col">Email</th>
+                            <th scope = "col">Rank</th>
+                            <th scope = "col">Kick</th>
+                            </tr>
+                        {% for this_user in read_all_users_in_group(group.id)%}
+                            {% set this_user_rank = read_rank(this_user.id, group.id).rank_in_group %}
+                            <tr >
+                            <td>{{this_user.username}}</td>
+                            <td>{{this_user.email}}</td>
+                            <td>
+                                {% if this_user.id != user.id %}
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions{{this_user.id}}{{group.id}}" id="inlineRadio{{this_user.id}}{{group.id}}1" value="option1" 
+                                            {% if this_user_rank == 0 %} checked {% endif %} {% if viewer_rank < 2 or this_user_rank == 2 %} disabled {% endif %} onclick="rerankUser({{this_user.id}},{{group.id}},{{0}})">
+                                        <label class="form-check-label" for="inlineRadio{{this_user.id}}{{group.id}}1">
+                                            General</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions{{this_user.id}}{{group.id}}" id="inlineRadio{{this_user.id}}{{group.id}}2" value="option2"
+                                        {% if this_user_rank == 1 %} checked {% endif %} {% if viewer_rank < 2 or this_user_rank == 2 %} disabled {% endif %} onclick="rerankUser({{this_user.id}},{{group.id}},{{1}})">
+                                        
+                                        <label class="form-check-label" for="inlineRadio{{this_user.id}}{{group.id}}2">
+                                            Authorized</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions{{this_user.id}}{{group.id}}" id="inlineRadio{{this_user.id}}{{group.id}}3" value="option3" 
+                                        {% if this_user_rank == 2 %} checked {% endif %} {% if viewer_rank < 2 or this_user_rank == 2 %} disabled {% endif %} onclick="rerankUser({{this_user.id}},{{group.id}},{{2}})">
+                                        <label class="form-check-label" for="inlineRadio{{this_user.id}}{{group.id}}3">
+                                            Admin</label>
+                                    </div>
+                                {% else %}
+                                    {% if this_user_rank == 0%}
+                                    General
+                                    {% elif this_user_rank == 1 %}
+                                    Authorized
+                                    {% elif this_user_rank == 2 %}
+                                    Admin
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if this_user.id != user.id %}
+                                <div name = "kick-user-buttons" id = "kick-user-buttons">
+                                <button style = "height : 100%" name = "kick-user" id = "kick-user{{this_user.id}}{{group.id}}" {% if viewer_rank < 2 %} disabled {% endif %} onclick = "kickFromGroup({{this_user.id}},{{group.id}})" class = "btn btn-danger"><i class="fa fa-trash"></i></button> <br>
+                                </div>
+                                {% endif %}
+                            </td>
+                            </tr>
+                        {% endfor %}
+                        </table>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-danger" onclick="leaveGroup({{user.id}},{{group.id}})">Leave Group</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+  </div>
+
+<div class="container my-5">
+
+    <h1 align = "center">Join an Existing Group</h1> <br>
+
+  {% for group in out_groups %}
+
+  <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+
+      <div class="card" id = "accordionCard">
+
+          <div class="card-header" role="tab">
+          <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx" href="#collapseOut{{group.id}}"
+              aria-expanded="false" aria-controls="collapseThree3">
+            <button class = "group-button text-dark">
+                    {{group.group_name}} ({{ read_all_users_in_group(group.id)|length }})
+                <i class="fa fa-angle-down rotate-icon"></i>
+            </button>
+          </a>
+          </div>
+          <div id="collapseOut{{group.id}}" class="collapse" role="tabpanel" aria-labelledby="headingThree3"
+              data-parent="#accordionEx">
+          <div class="card-body">
+
+            {% if read_all_users_in_group(group.id)|length > 0%}
+            <table class = "table table-striped table-bordered table-hover">
+                <tr>
+                <th scope = "col">Username</th>
+                <th scope = "col">Email</th>
+                </tr>
+              {% for this_user in read_all_users_in_group(group.id)%}
+                    <tr>
+                        <td>{{this_user.username}}</td>
+                        <td>{{this_user.email}}</td>
+                    </tr>
+              {% endfor %}
+                </table>
+                {% endif %}
+
+
+              <div class="btn-group" role="group" aria-label="Basic example">
+                  <button type="button" class="btn btn-success" onclick="joinGroup({{user.id}},{{group.id}})">Join Group</button>
+              </div>
+          </div>
+          </div>
+      </div>
+  </div>
+{% endfor %}
+</div>
+
+
+<div id = "new-group-div" align = "center">
+    <form name = "new-group"  id = "new-group"  class="row row-cols-lg-auto g-3 align-items-center" method = "POST">
+        <div >
+            <label class="font-weight-bold" for="inlineFormInputGroupUsername"><h1 align = "center">Create a New Group</h1></label>
+            <input name = "new_group_name" maxlength="50" type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Unique Group Name"/>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+</div>
+
+
+
+{% endblock %}

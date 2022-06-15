@@ -1,0 +1,53 @@
+{% extends "index.html" %}
+
+{% block title %} New Ticket {% endblock %}
+
+{% block content %}
+    <br>
+
+<div class="card flex-md-row mb-4 box-shadow h-md-250">
+    <form method = "POST">
+        <table class = "table table-borderless">
+            <tr>
+                <td align = "center" colspan = "100%"><h1>Submit a Ticket</h1></td>
+            </tr>
+            <tr>
+                <td colspan = "100%">
+                    <textarea name = "ticket_title" id = "ticket_title" class = "form-control" placeholder="Title" oninput="resizeTextArea(this.id)" maxlength="70"></textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan = "100%">
+                    <textarea name = "ticket_content" id = "ticket_content" class = "form-control" placeholder="Describe your problem" oninput="resizeTextArea(this.id)"></textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan = "50%">
+                    <label for = "priority">Priority Level: </label>
+                    <select name = "priority" class = "form-select">
+                        <option value = "0">Whenever</option>
+                        <option value = "1">Nice to Have</option>
+                        <option value = "2">Important</option>
+                        <option value = "3">CRITICAL</option>
+                    </select>
+                </td>
+                <td colspan = "50%">
+                    <label for = "group">Select Group: </label>
+                    <select name = "group" class = "form-select">
+                        <option value = "universal">No Group</option>
+                        {% for group in group_names%}
+                            <option value = "{{group}}" >{{group}}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div align = "center">
+            <button type = "submit" class = "btn btn-primary">Submit Ticket</button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
