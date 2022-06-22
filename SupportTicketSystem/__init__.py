@@ -19,11 +19,11 @@ def create_app(config = None):
     if config:
         for key, value in config.items():
             app.config[key] = value
-            
+
     initialize(app)
     create_database(app)
     register_blueprints(app)
-    
+
     return app
 
 def initialize(app):
