@@ -20,8 +20,8 @@ def create_app(config = None):
         for key, value in config.items():
             app.config[key] = value
             
-    create_database(app)
     initialize(app)
+    create_database(app)
     register_blueprints(app)
     
     return app
