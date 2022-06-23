@@ -101,9 +101,9 @@ def create_ticket(db, user_id, group_id, title, content, resolved = False, prior
     if (user_id is None or title is None or content is None):
         raise ValueError("One or more necessary inputs is null")
     if not time_posted:
-        ticket = Ticket(user_id = user_id, group_id = group_id, title = title, content = content, resolved = resolved)
+        ticket = Ticket(user_id = user_id, group_id = group_id, title = title, content = content, resolved = resolved, priority=priority)
     else:
-        ticket = Ticket(user_id = user_id, group_id = group_id, title = title, content = content, resolved = resolved, time_posted = time_posted)
+        ticket = Ticket(user_id = user_id, group_id = group_id, title = title, content = content, resolved = resolved, time_posted = time_posted, priority=priority)
     db.session.add(ticket)
     db.session.commit()
     return ticket
