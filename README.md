@@ -47,14 +47,7 @@ The website exists to be a place where you can issue and resolve support tickets
     Javascript
     HTML
     CSS
-    PostgreSQL
     SQLite
-
-<hr>
-
-<i> The project in this repo uses a local SQLite database for your convenience. This avoids the hassle of authenticating access to the PostgreSQL database server that the live website [here](http://ma125.pythonanywhere.com/) uses for anyone who wants to try to run this locally on their machine. </i>
-
-<hr>
 
 ## Setup
 
