@@ -5,7 +5,7 @@
 
 ## About the project
 
-This is a website built using the Flask framework, SQLAlchemy ORM, Python, and a PostgreSQL database on the backend, with vanilla Javascript, CSS, and HTML for the front end.
+This is a website built using the Flask framework, SQLAlchemy ORM, Python, and an SQLite database on the backend, with vanilla Javascript, CSS, and HTML for the front end.
 
 The website exists to be a place where you can issue and resolve support tickets for your organization or projects.
 
